@@ -47,9 +47,12 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
-  config.vm.synced_folder '.', '/vagrant', disabled: true
-  config.vm.synced_folder '.', '/home/vagrant/workspace'
+  # config.vm.synced_folder '.', '/vagrant', disabled: true
+  
+  # ================== UN-COMMENT THIS LINES! ==================
+  # config.vm.synced_folder '.', '/home/vagrant/workspace', disabled: true
+  # config.vm.synced_folder './src', '/var/www/mybb'
+  # ================== UN-COMMENT THIS LINES! ================== END
   
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -81,38 +84,6 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "shell", inline: <<-SHELL
-    apt-get update
-    
-    apt-get install \
-            apt-transport-https \
-            ca-certificates \
-            curl \
-            gnupg-agent \
-            software-properties-common -y
-
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    apt-key fingerprint 0EBFCD88
-
-    add-apt-repository \
-            "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-            bionic \
-            stable"
-
-    apt-get update
-    apt-get install \
-            docker-ce=5:19.03.6~3-0~ubuntu-bionic \
-            docker-ce-cli=5:19.03.6~3-0~ubuntu-bionic \
-            containerd.io -y
-
-    groupadd docker
-    usermod -aG docker vagrant
-    newgrp docker
-
-    curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose 
-    chmod +x /usr/local/bin/docker-compose
-    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-
-  SHELL
+  config.vm.provision :shell, path: "provision.sh"
 
 end
